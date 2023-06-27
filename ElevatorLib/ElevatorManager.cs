@@ -13,9 +13,10 @@
         //int CurrentWeight { get; set; } = 0;
     }
 
+    
     public class ElevatorManager
     {
-        ElevatorState _currentState { get; set; }
+        public ElevatorState _currentState { get; private set; }
 
         public IdleState IdleState { get; set; } = new IdleState();
         public MovingState MovingState { get; set; } = new MovingState();

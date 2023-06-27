@@ -8,13 +8,14 @@ namespace Elevator.Test
         public void InitialState()
         {
             // Arrange
-            ElevatorManager elevator = new ElevatorManager();
-            
+            ElevatorManager elevator = new ();
+            var idleState = new IdleState();
             // Act
-            elevator.ChangeState(elevator.IdleState);
+            elevator.ChangeState(idleState);
+            elevator.Update();
 
             // Assert
-            Assert.Equal(elevator.IdleState, );
+            Assert.Equal(elevator._currentState.GetType(), elevator.IdleState.GetType());
         }
     }
 }
