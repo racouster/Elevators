@@ -1,26 +1,24 @@
 ﻿namespace ElevatorLib
 {
-    public class Elevator
-    {
-        Guid Id { get; set; } = Guid.NewGuid();
-        int CurrentFloor { get; set; } = -1;
-        int TargetFloor { get; set; } = -1;
-
-        //int MaxFloor { get; set; } = 100;
-        //int MinFloor { get; set; } = -3;
-        //int Speed { get; set; } = 0;
-        //int MaxWeight { get; set; } = 1000;
-        //int CurrentWeight { get; set; } = 0;
-    }
-
-    
     public class ElevatorManager
     {
+        public Guid Id { get; } = Guid.NewGuid();
+        
+        public int MinimumFloor { get; private set; } = -3;
+        public int MaximumFloor { get; private set; } = 10;
+
+        public int CurrentFloor { get; private set; } = 0;
+        public int TargetFloor { get; private set; } = 0;
+
+
+
         public ElevatorState _currentState { get; private set; }
 
-        public IdleState IdleState { get; set; } = new IdleState();
-        public MovingState MovingState { get; set; } = new MovingState();
-        public ErrorState ErrorState { get; set; } = new ErrorState();
+        public IdleState IdleState = new ();
+        public MovingState MovingState = new ();
+        public ClosingState ClosingState = new();
+        public OpeningState OpeningState = new();
+        public ErrorState ErrorState = new();
 
         public ElevatorManager()
         {
@@ -36,55 +34,41 @@
         public void ChangeState(ElevatorState elevatorState)
         {
             _currentState = elevatorState;
-            elevatorState.EnterState(this);
+            _currentState.EnterState(this);
         }
-    }
 
-    public abstract class ElevatorState
-    {
-        public abstract void EnterState(ElevatorManager elevator);
-        public abstract void UpdateState(ElevatorManager elevator);
-        public abstract void OnEnterElevator(ElevatorManager elevator);
-    }
+        internal void MoveDown()
+        {
+            if (this.CurrentFloor > this.MinimumFloor)
+            {
+                this.CurrentFloor--;
+            }
+        }
 
-    public class IdleState : ElevatorState
-    {
-        public override void EnterState(ElevatorManager elevator)
+        internal void MoveUp()
         {
+            if (this.CurrentFloor < this.MaximumFloor)
+            {
+                this.CurrentFloor++;
+            }
+        }
 
-        }
-        public override void UpdateState(ElevatorManager elevator)
+        public void ChooseFloor(int targetFloor)
         {
-        }
-        public override void OnEnterElevator(ElevatorManager elevator)
-        {
-        }
-    }
+            if (targetFloor < this.MinimumFloor)
+            {
+                this.TargetFloor = this.MinimumFloor;
+            }
+            else if (targetFloor > this.MaximumFloor)
+            {
+                this.TargetFloor = this.MaximumFloor;
+            }
+            else
+            {
+                this.TargetFloor = targetFloor;
+            }
 
-    public class MovingState : ElevatorState
-    {
-        public override void EnterState(ElevatorManager elevator)
-        {
-        }
-        public override void UpdateState(ElevatorManager elevator)
-        {
-            elevator.ChangeState(elevator.IdleState);
-        }
-        public override void OnEnterElevator(ElevatorManager elevator)
-        {
-        }
-    }
-
-    public class ErrorState : ElevatorState
-    {
-        public override void EnterState(ElevatorManager elevator)
-        {
-        }
-        public override void UpdateState(ElevatorManager elevator)
-        {
-        }
-        public override void OnEnterElevator(ElevatorManager elevator)
-        {
+            this.ChangeState(this.MovingState);
         }
     }
 }
