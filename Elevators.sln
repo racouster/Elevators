@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatorTest", "ElevatorTest\ElevatorTest.csproj", "{67004BD6-135F-4FDE-87DA-AA9874A251DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElevatorConsoleDemo", "ElevatorTest\ElevatorConsoleDemo.csproj", "{67004BD6-135F-4FDE-87DA-AA9874A251DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatorLib", "ElevatorLib\ElevatorLib.csproj", "{B1A09F50-7859-48AC-8486-EFFDB120D29F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElevatorLib", "ElevatorLib\ElevatorLib.csproj", "{B1A09F50-7859-48AC-8486-EFFDB120D29F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Test", "Elevator.Test\Elevator.Test.csproj", "{2D098301-332A-484A-BF4D-071E6B08AE8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Test", "Elevator.Test\Elevator.Test.csproj", "{2D098301-332A-484A-BF4D-071E6B08AE8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
