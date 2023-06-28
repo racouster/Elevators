@@ -6,7 +6,7 @@ namespace Elevator.Test
     public class ElevatorTest
     {
         [Fact]
-        public void InitialState()
+        public void ElevatorManager_InitialState_IsIdle()
         {
             // Arrange
             ElevatorManager elevator = new();
@@ -19,7 +19,7 @@ namespace Elevator.Test
         }
 
         [Fact]
-        public void InitialStateToIdleState()
+        public void ElevatorManager_ChangeToIdleState_DoesNothing()
         {
             // Arrange
             ElevatorManager elevator = new();
@@ -39,18 +39,18 @@ namespace Elevator.Test
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(-2)]
-        public void MovementShouldEndOnCorrectFloor(int targetFloor)
+        public void ChooseFloor_MovingUpOrDown_StopsOnTargetFloor(int targetFloor)
         {
             // Arrange
             var startingFloor = 0;
             ElevatorManager elevator = new(startingFloor, minimumFloor: -2, maximumFloor: 2);
 
             var floorDiff = Math.Abs(startingFloor - targetFloor);
-
+            var moreUpdatesThanNeeded = floorDiff + 5;
             // Act
             elevator.ChooseFloor(targetFloor);
 
-            for (int i = 0; i < floorDiff; i++)
+            for (int i = 0; i < moreUpdatesThanNeeded; i++)
             {
                 elevator.Update();
             }
@@ -62,7 +62,7 @@ namespace Elevator.Test
         [Theory]
         [InlineData(-3)]
         [InlineData(3)]
-        public void MovementShouldNotExceedLimits(int targetFloor)
+        public void ChooseFloor_BeyondTarget_DoesNotExceedLimits(int targetFloor)
         {
             // Arrange
             var startingFloor = 0;
