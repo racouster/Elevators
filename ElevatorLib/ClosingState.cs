@@ -4,17 +4,17 @@
     {
         public override void EnterState(ElevatorManager elevator)
         {
-            Console.WriteLine($"Elevator {elevator.Id}: Door Closed.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Door Closing.");
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
-            Console.WriteLine($"Elevator {elevator.Id}: Closed.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Door Closed.");
         }
 
         public override void OnFloorSelected(ElevatorManager elevator, int floor)
         {
-            Console.WriteLine($"Selected floor: {floor}.");
+            elevator.SetStatusMessage($"Selected floor: {floor}.");
         }
     }
 }

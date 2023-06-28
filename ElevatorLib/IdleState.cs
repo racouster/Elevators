@@ -4,16 +4,18 @@
     {
         public override void EnterState(ElevatorManager elevator)
         {
-            Console.WriteLine($"Elevator {elevator.Id}: Is now idle.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Is now idle on floor: {elevator.CurrentFloor}.");
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
-            Console.WriteLine($"{elevator.Id}: {elevator.CurrentFloor} zzz.");
+            elevator.SetStatusMessage($"{elevator.Id}: Current Floor: {elevator.CurrentFloor}.");
         }
 
         public override void OnFloorSelected(ElevatorManager elevator, int targetFloor)
         {
+            elevator.SetStatusMessage($"Selected floor: {targetFloor}.");
+            // TODO: Add in-transit floor selection, add to queue
             elevator.ChooseFloor(targetFloor);
             elevator.ChangeState(elevator.MovingState);
         }

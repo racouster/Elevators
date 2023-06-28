@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ElevatorLib
+﻿namespace ElevatorLib
 {
     public class ElevatorSystemManager
     {
@@ -22,14 +16,15 @@ namespace ElevatorLib
 
         public void Start()
         {
-            
+
         }
 
         public void Stop()
         {
-            
+
         }
 
+        // TODO: Add a way to request an elevator from a specific floor
         public void RequestElevator(int floor)
         {
             var idleElevator = Elevators
@@ -47,6 +42,7 @@ namespace ElevatorLib
 
         public void Update(TimeSpan timeDelta)
         {
+            // TODO: Will be used in draw to determine how much to move the elevator
             double gameTimeElapsed = timeDelta.TotalMilliseconds / 1000;
 
             foreach (var elevator in Elevators)

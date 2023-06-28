@@ -4,15 +4,15 @@
     {
         public override void EnterState(ElevatorManager elevator)
         {
-            Console.WriteLine($"Elevator {elevator.Id}: Is broken.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Is broken.");
         }
         public override void UpdateState(ElevatorManager elevator)
         {
-            Console.WriteLine($"Elevator {elevator.Id}: @#$^%&$.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: @#$^%&$.");
         }
         public override void OnFloorSelected(ElevatorManager elevator, int floor)
         {
-            Console.WriteLine($"Selected floor: {floor}.");
+            elevator.SetStatusMessage($"Selected floor: {floor}.");
         }
     }
 }

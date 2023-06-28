@@ -5,17 +5,19 @@
 
         public override void EnterState(ElevatorManager elevator)
         {
-            Console.WriteLine($"Elevator {elevator.Id}: Moving...");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Started Moving to floor {elevator.TargetFloor}");
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
             if (elevator.CurrentFloor == elevator.TargetFloor)
             {
+                elevator.SetStatusMessage($"Elevator {elevator.Id}: Arrived at floor {elevator.CurrentFloor}.");
                 elevator.ChangeState(elevator.IdleState);
             }
             else
             {
+                elevator.SetStatusMessage($"Elevator {elevator.Id}:Moving from {elevator.CurrentFloor} to floor {elevator.TargetFloor}.");
                 if (elevator.CurrentFloor > elevator.TargetFloor)
                 {
                     elevator.MoveDown();
@@ -29,7 +31,7 @@
 
         public override void OnFloorSelected(ElevatorManager elevator, int floor)
         {
-            Console.WriteLine($"Selected floor: {floor}.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Selected floor: {floor}.");
         }
     }
 }
