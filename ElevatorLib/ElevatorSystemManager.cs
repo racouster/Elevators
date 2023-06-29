@@ -1,9 +1,16 @@
-﻿namespace ElevatorLib
+﻿using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Elevator.Test")]
+namespace ElevatorLib
 {
     public class ElevatorSystemManager
     {
-        private List<ElevatorManager> Elevators { get; set; } = new List<ElevatorManager>();
-        private int ElevatorCount { get; }
+        public ImmutableList<ElevatorManager> Elevators { get; private set; }
+        public int ElevatorCount { get; private set; }
+        
+        // TODO: Use state machine for system running/paused/stopped states.
+        public bool IsRunning { get; private set; } = false;
 
         public ElevatorSystemManager(int elevatorCount)
         {
@@ -11,20 +18,19 @@
 
             Elevators = Enumerable.Range(0, ElevatorCount)
                 .Select<int, ElevatorManager>(_ => new ElevatorManager())
-                .ToList();
+                .ToImmutableList();
         }
 
         public void Start()
         {
-
+            IsRunning = true;
         }
 
         public void Stop()
         {
-
+            IsRunning = false;
         }
 
-        // TODO: Add a way to request an elevator from a specific floor
         public void RequestElevator(int floor)
         {
             var idleElevator = Elevators
@@ -37,17 +43,20 @@
                 idleElevator.ChooseFloor(floor);
             }
 
-            //TODO: What if there are no idle elevators?
+            //TODO: Add queue for elevators that are busy
         }
 
         public void Update(TimeSpan timeDelta)
         {
-            // TODO: Will be used in draw to determine how much to move the elevator
-            double gameTimeElapsed = timeDelta.TotalMilliseconds / 1000;
-
-            foreach (var elevator in Elevators)
+            if (IsRunning)
             {
-                elevator.Update();
+                // TODO: Will be used in draw to determine how much to move the elevator
+                double gameTimeElapsed = timeDelta.TotalMilliseconds / 1000;
+
+                foreach (var elevator in Elevators)
+                {
+                    elevator.Update();
+                }
             }
         }
     }
