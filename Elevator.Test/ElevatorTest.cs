@@ -1,4 +1,5 @@
 using ElevatorLib;
+using ElevatorLib.States;
 using FluentAssertions;
 
 namespace Elevator.Test

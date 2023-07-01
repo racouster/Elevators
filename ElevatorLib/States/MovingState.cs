@@ -1,4 +1,4 @@
-﻿namespace ElevatorLib
+﻿namespace ElevatorLib.States
 {
     public class MovingState : ElevatorState
     {

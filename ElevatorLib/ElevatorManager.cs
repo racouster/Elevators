@@ -1,4 +1,6 @@
-﻿namespace ElevatorLib
+﻿using ElevatorLib.States;
+
+namespace ElevatorLib
 {
     public class ElevatorManager
     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
+using ElevatorLib.States;
 
 [assembly: InternalsVisibleTo("Elevator.Test")]
 namespace ElevatorLib
@@ -44,6 +45,18 @@ namespace ElevatorLib
             }
 
             //TODO: Add queue for elevators that are busy
+        }
+
+        public class Elevator : IElevator
+        {
+            public int CurrentFloor { get ; set; }
+            public string StatusMessage { get ; set; }
+        }
+
+        public IEnumerable<IElevator> GetElevatorSystemState()
+        { 
+            var elevatorSnapshot = new List<IElevator>();
+            return Elevators.Select(e => new Elevator() { CurrentFloor = e.CurrentFloor, StatusMessage = e.StatusMessage });
         }
 
         public void Update(TimeSpan timeDelta)
