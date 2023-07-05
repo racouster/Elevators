@@ -2,13 +2,11 @@ import { ChangeEvent, useContext, useEffect, useState } from 'react';
 
 import { ConnectionContext } from './Contexts/connection.context';
 import { IUserPacket } from './Model/IUserPacket';
-import './App.css';
+import './App.scss';
 // import logo from './logo.svg';
 import IElevator from './Model/IElevator';
 import Building from './Components/Building/building.component';
-import IElevatorShaft from './Model/IElevatorShaft';
 import { ElevatorContext } from './Contexts/elevator.context';
-
 
 let currentUserDefault = {
   username: "User1",
@@ -50,6 +48,8 @@ function App() {
       //console.log("UpdateElevators:", elevators);
       setElevators(elevators)
     });
+    // Ignore warning as this is a once off section
+    // eslint-disable-next-line
   }, [])
 
   const getElevatorSystemState = async (clickEvent: any) => {
@@ -85,13 +85,16 @@ function App() {
         <Building />
       </main>
       <footer>
-        <input type='text' value={currentUser.message} onChange={messageInputChange} />
-        <button type='button' onClick={sendMessage}>Send</button>
-        <button type='button' onClick={sendUpdatedPosition}>Join</button>
-        <button type='button' onClick={getElevatorSystemState}>Log State</button>
-
-        <input type='text' value={requestedFloor} onChange={requestedFloorChange} />
-        <button type='button' onClick={requestFloor}>Call Elevator</button>
+        <div>
+          <input type='text' value={currentUser.message} onChange={messageInputChange} />
+          <button type='button' onClick={sendMessage}>Send</button>
+          <button type='button' onClick={sendUpdatedPosition}>Join</button>
+          <button type='button' onClick={getElevatorSystemState}>Log State</button>
+        </div>
+        <div className=' max-w-sm'>
+          <input type='text' value={requestedFloor} onChange={requestedFloorChange} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+          <button type='button' className=' bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ' onClick={requestFloor}>Call Elevator</button>
+        </div>
       </footer>
     </div>
   );

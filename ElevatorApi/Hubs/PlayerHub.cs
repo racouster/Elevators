@@ -2,7 +2,6 @@
 using ElevatorApi.Services;
 using ElevatorLib;
 using Microsoft.AspNetCore.SignalR;
-using System.Diagnostics;
 
 namespace ElevatorApi.Hubs
 {
@@ -13,6 +12,7 @@ namespace ElevatorApi.Hubs
     {
         private readonly IElevatorService _elevatorService;
         private readonly IHubContext<PlayerHub> _hubContext;
+        private readonly TextWriter _outputStream = TextWriter.Null;
 
         public PlayerHub(IElevatorService elevatorService, IHubContext<PlayerHub> hubContext)
         {
@@ -22,8 +22,7 @@ namespace ElevatorApi.Hubs
 
         public async Task UpdatePosition(UserPacket packet) 
         {
-            Console.WriteLine("UpdatePosition");
-            Debug.WriteLine("UpdatePosition");
+            _outputStream.WriteLine("UpdatePosition");
             // TODO: Read: https://learn.microsoft.com/en-us/aspnet/signalr/overview/getting-started/tutorial-high-frequency-realtime-with-signalr
             // this can be used for DDOS?
             await Clients.All.SendAsync("PositionUpdated", packet);
@@ -31,25 +30,25 @@ namespace ElevatorApi.Hubs
 
         public async Task SendMessage(string userId, string message)
         {
-            Console.WriteLine("SendMessage");
+            _outputStream.WriteLine("SendMessage");
             await Clients.All.SendAsync("MessageReceived", userId, message);
         }
 
         public async Task RequestElevator(int floor)
         {
-            Console.WriteLine($"RequestElevator: {floor}");
+            _outputStream.WriteLine($"RequestElevator: {floor}");
             _elevatorService.RequestElevator(floor);
         }
 
         public async Task<IEnumerable<IElevator>> GetElevatorSystemState()
         {
-            Console.WriteLine($"GetElevatorSystemState");
+            _outputStream.WriteLine($"GetElevatorSystemState");
             return _elevatorService.GetElevatorSystemState();
         }
 
         private void RegisterUpdateElevatorsEvent()
         {
-            Console.WriteLine($"UpdateElevators");
+            _outputStream.WriteLine($"UpdateElevators");
 
             _elevatorService.RegisterUpdateCallback(async (sender, eventArgs) => 
             {
@@ -63,13 +62,8 @@ namespace ElevatorApi.Hubs
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            Console.WriteLine($"OnConnectedAsync");
+            _outputStream.WriteLine($"OnConnectedAsync");
             RegisterUpdateElevatorsEvent();
         }
-
-
     }
 }
-
-
-    

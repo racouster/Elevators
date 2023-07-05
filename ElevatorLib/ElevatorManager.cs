@@ -5,7 +5,7 @@ namespace ElevatorLib
     public class ElevatorManager
     {
         public Guid Id { get; } = Guid.NewGuid();
-        public string StatusMessage { get; private set; }
+        public string? StatusMessage { get; private set; }
 
         public int MinimumFloor { get; private set; } = -3;
         public int MaximumFloor { get; private set; } = 10;
@@ -13,21 +13,31 @@ namespace ElevatorLib
         public int CurrentFloor { get; private set; } = 0;
         public int TargetFloor { get; private set; } = 0;
 
-
+        public int Occupants { get; private set; } = 0;
+        public int OccupantLimit { get; private set; } = 0;
 
         public ElevatorState _currentState { get; private set; }
+        public ElevatorState _previousState { get; private set; }
 
         public IdleState IdleState = new();
         public MovingState MovingState = new();
-        public ClosingState ClosingState = new();
-        public OpeningState OpeningState = new();
+        public DoorsClosedState DoorsClosedState = new();
+        public DoorsOpenState DoorsOpenState = new();
         public ErrorState ErrorState = new();
+
+        private TextWriter _output = TextWriter.Null; //Console.Out;
 
         public ElevatorManager()
         {
+            _previousState = new IdleState();
             _currentState = new IdleState();
-            _currentState.EnterState(this);
+            _currentState.OnEnterState(this);
             StatusMessage = "Initializing...";
+        }
+
+        public ElevatorManager(StreamWriter outputStream) : this()
+        {
+            _output = outputStream;
         }
 
         public ElevatorManager(int startingFloor) : this()
@@ -44,14 +54,19 @@ namespace ElevatorLib
 
         public void Update()
         {
-            Console.WriteLine(this.StatusMessage);
+            _output.WriteLine(this.StatusMessage);
             _currentState.UpdateState(this);
         }
 
         public void ChangeState(ElevatorState elevatorState)
         {
-            _currentState = elevatorState;
-            _currentState.EnterState(this);
+            if (_currentState.CanProceedTo(this))
+            {
+                _currentState.OnLeaveState(this);
+                _previousState = _currentState.Clone();
+                _currentState = elevatorState;
+                _currentState.OnEnterState(this);
+            }
         }
 
         internal void MoveDown()
@@ -91,6 +106,27 @@ namespace ElevatorLib
         public void SetStatusMessage(string newMessage)
         {
             this.StatusMessage = newMessage;
+        }
+
+        internal int AddOccupants(int newOccupants)
+        {
+            var availableSpace = OccupantLimit - Occupants;
+            int remainder = availableSpace - newOccupants;
+
+            Occupants += availableSpace - newOccupants;
+
+            return remainder;
+        }
+
+        internal bool OpenDoor()
+        {
+            if (_currentState != IdleState)
+            {
+                return false;
+            }
+
+            ChangeState(DoorsOpenState);
+            return true;
         }
     }
 }

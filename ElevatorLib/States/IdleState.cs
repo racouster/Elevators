@@ -2,22 +2,29 @@
 {
     public class IdleState : ElevatorState
     {
-        public override void EnterState(ElevatorManager elevator)
+        public override void OnEnterState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Elevator {elevator.Id}: Is now idle on floor: {elevator.CurrentFloor}.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Is about to idle on floor: {elevator.CurrentFloor}.");
+            if(elevator._previousState == elevator.MovingState)
+            {
+                elevator.ChangeState(elevator.DoorsOpenState);
+            }
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"{elevator.Id}: Current Floor: {elevator.CurrentFloor}.");
+            elevator.SetStatusMessage($"{elevator.Id}: Idle on Floor: {elevator.CurrentFloor}.");
         }
 
-        public override void OnFloorSelected(ElevatorManager elevator, int targetFloor)
+        public override bool CanProceedTo(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Selected floor: {targetFloor}.");
-            // TODO: Add in-transit floor selection, add to queue
-            elevator.ChooseFloor(targetFloor);
-            elevator.ChangeState(elevator.MovingState);
+            return elevator._currentState.GetType() == elevator.IdleState.GetType()
+                || elevator._currentState.GetType() == elevator.DoorsClosedState.GetType();
+        }
+
+        public override void OnLeaveState(ElevatorManager elevator)
+        {
+            elevator.SetStatusMessage($"{elevator.Id}: Leaving {this.GetType().Name} state...");
         }
     }
 }

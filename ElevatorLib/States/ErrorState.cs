@@ -2,7 +2,7 @@
 {
     public class ErrorState : ElevatorState
     {
-        public override void EnterState(ElevatorManager elevator)
+        public override void OnEnterState(ElevatorManager elevator)
         {
             elevator.SetStatusMessage($"Elevator {elevator.Id}: Is broken.");
         }
@@ -10,9 +10,10 @@
         {
             elevator.SetStatusMessage($"Elevator {elevator.Id}: @#$^%&$.");
         }
-        public override void OnFloorSelected(ElevatorManager elevator, int floor)
+
+        public override void OnLeaveState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Selected floor: {floor}.");
+            elevator.SetStatusMessage($"{elevator.Id}: Leaving {this.GetType().Name} state...");
         }
     }
 }

@@ -3,7 +3,7 @@
     public class MovingState : ElevatorState
     {
 
-        public override void EnterState(ElevatorManager elevator)
+        public override void OnEnterState(ElevatorManager elevator)
         {
             elevator.SetStatusMessage($"Elevator {elevator.Id}: Started Moving to floor {elevator.TargetFloor}");
         }
@@ -29,9 +29,9 @@
             }
         }
 
-        public override void OnFloorSelected(ElevatorManager elevator, int floor)
+        public override void OnLeaveState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Elevator {elevator.Id}: Selected floor: {floor}.");
+            elevator.SetStatusMessage($"{elevator.Id}: Leaving {this.GetType().Name} state...");
         }
     }
 }

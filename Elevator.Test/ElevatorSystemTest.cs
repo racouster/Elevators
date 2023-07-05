@@ -15,7 +15,20 @@ namespace Elevator.Test
             elevatorSystem.Start();
             
             // Assert
-            Assert.True(elevatorSystem.IsRunning);
+            Assert.True(elevatorSystem.Elevators.Count == 1);
+        }
+
+        [Fact]
+        public void ElevatorSystemManager_Floors_IsSet()
+        {
+            // Arrange
+            ElevatorSystemManager elevatorSystem = new(1, 1, 10);
+
+            // Act
+            elevatorSystem.Start();
+
+            // Assert
+            Assert.True(elevatorSystem.Floors.Count == 1);
         }
 
         [Fact]
@@ -44,7 +57,6 @@ namespace Elevator.Test
 
             // Assert
             elevatorSystem.Elevators[0].CurrentFloor.Should().Be(targetFloor);
-            
         }
 
         

@@ -1,10 +1,12 @@
 ﻿namespace ElevatorLib.States
 {
-    public class OpeningState : ElevatorState
+    public partial class DoorsOpenState : IdleState
     {
-        public override void EnterState(ElevatorManager elevator)
+
+        public override void OnEnterState(ElevatorManager elevator)
         {
             elevator.SetStatusMessage($"Elevator {elevator.Id}: Door Opening.");
+
         }
 
         public override void UpdateState(ElevatorManager elevator)
@@ -12,9 +14,9 @@
             elevator.SetStatusMessage($"Elevator {elevator.Id}: Door Open.");
         }
 
-        public override void OnFloorSelected(ElevatorManager elevator, int floor)
+        public override void OnLeaveState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Selected floor: {floor}.");
+            elevator.SetStatusMessage($"Elevator {elevator.Id}: Door will soon close.");
         }
     }
 }
