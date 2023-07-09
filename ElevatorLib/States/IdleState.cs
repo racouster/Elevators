@@ -2,29 +2,39 @@
 {
     public class IdleState : ElevatorState
     {
-        public override void OnEnterState(ElevatorManager elevator)
+        public override void EnterState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Elevator {elevator.Id}: Is about to idle on floor: {elevator.CurrentFloor}.");
-            if(elevator._previousState == elevator.MovingState)
-            {
-                elevator.ChangeState(elevator.DoorsOpenState);
-            }
+            elevator.SetStatusMessage($"Started idling [{elevator.CurrentFloorNumber}]");
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"{elevator.Id}: Idle on Floor: {elevator.CurrentFloor}.");
+            elevator.SetStatusMessage($"Idle on [{elevator.CurrentFloorNumber}]");
+
+            if (elevator.PreviousState.GetType() == typeof(MovingState))
+            {
+                elevator.SetStatusMessage($"Initiate open doors [{elevator.CurrentFloorNumber}]");
+                elevator.ChangeState(elevator.DoorsOpenState);
+            }
+            else if (elevator.PreviousState.GetType() == typeof(DoorsOpenState))
+            {
+                elevator.SetStatusMessage($"Initiate close doors  [{elevator.CurrentFloorNumber}]");
+                elevator.ChangeState(elevator.DoorsClosedState);
+            }
         }
 
-        public override bool CanProceedTo(ElevatorManager elevator)
+        public override bool CanProceedTo(ElevatorState targetState)
         {
-            return elevator._currentState.GetType() == elevator.IdleState.GetType()
-                || elevator._currentState.GetType() == elevator.DoorsClosedState.GetType();
+            return
+                targetState.GetType() == typeof(DoorsOpenState)
+                || targetState.GetType() == typeof(IdleState)
+                || targetState.GetType() == typeof(DoorsClosedState)
+                || targetState.GetType() == typeof(MovingState);
         }
 
-        public override void OnLeaveState(ElevatorManager elevator)
+        public override void LeaveState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"{elevator.Id}: Leaving {this.GetType().Name} state...");
+            elevator.SetStatusMessage($"Leaving {this.GetType().Name} state...");
         }
     }
 }

@@ -3,22 +3,22 @@
     public class MovingState : ElevatorState
     {
 
-        public override void OnEnterState(ElevatorManager elevator)
+        public override void EnterState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Elevator {elevator.Id}: Started Moving to floor {elevator.TargetFloor}");
+            elevator.SetStatusMessage($"Started Moving to floor {elevator.TargetFloor}");
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
-            if (elevator.CurrentFloor == elevator.TargetFloor)
+            if (elevator.CurrentFloorNumber == elevator.TargetFloor)
             {
-                elevator.SetStatusMessage($"Elevator {elevator.Id}: Arrived at floor {elevator.CurrentFloor}.");
+                elevator.SetStatusMessage($"Arrived at floor {elevator.CurrentFloorNumber}.");
                 elevator.ChangeState(elevator.IdleState);
             }
             else
             {
-                elevator.SetStatusMessage($"Elevator {elevator.Id}:Moving from {elevator.CurrentFloor} to floor {elevator.TargetFloor}.");
-                if (elevator.CurrentFloor > elevator.TargetFloor)
+                elevator.SetStatusMessage($"Moving from {elevator.CurrentFloorNumber} to floor {elevator.TargetFloor}.");
+                if (elevator.CurrentFloorNumber > elevator.TargetFloor)
                 {
                     elevator.MoveDown();
                 }
@@ -29,9 +29,14 @@
             }
         }
 
-        public override void OnLeaveState(ElevatorManager elevator)
+        public override void LeaveState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"{elevator.Id}: Leaving {this.GetType().Name} state...");
+            elevator.SetStatusMessage($"Leaving {this.GetType().Name} state...");
+        }
+
+        public override bool CanProceedTo(ElevatorState targetState)
+        {
+            return targetState.GetType() == typeof(IdleState);
         }
     }
 }

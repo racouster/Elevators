@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ElevatorLib\ElevatorLib.csproj" />
+    <ProjectReference Include="..\Game\GameSystem.csproj" />
   </ItemGroup>
 
 </Project>

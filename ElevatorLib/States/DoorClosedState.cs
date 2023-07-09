@@ -2,24 +2,40 @@
 {
     public class DoorsClosedState : ElevatorState
     {
-        public override void OnEnterState(ElevatorManager elevator)
+        public override void EnterState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Elevator {elevator.Id}: Door Closing.");
+            // Load occupants
+            elevator.SetStatusMessage($"Loading occupants: {elevator.CurrentFloor.Occupants}");
+
+            var startingFloorOccupants = elevator.CurrentFloor.Occupants;
+            // People enter elevator
+            var elevatorOccupantCount = elevator.AddOccupants(startingFloorOccupants);
+            var floorOccupantCount = elevator.CurrentFloor.RemoveOccupants(startingFloorOccupants);
+
+            elevator.SetStatusMessage($"Floor occupants: {floorOccupantCount}");
+
+
+            elevator.SetStatusMessage($"Door Closing.");
         }
 
         public override void UpdateState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"Elevator {elevator.Id}: Door Closed.");
-
-            if (elevator.CurrentFloor != elevator.TargetFloor)
-                elevator.ChangeState(elevator.MovingState);
-            else
+            if (elevator.PreviousState.GetType() == typeof(IdleState))
+            {
                 elevator.ChangeState(elevator.IdleState);
+            }
+
+            elevator.SetStatusMessage($"Door Closed.");
         }
 
-        public override void OnLeaveState(ElevatorManager elevator)
+        public override void LeaveState(ElevatorManager elevator)
         {
-            elevator.SetStatusMessage($"{elevator.Id}: Leaving {this.GetType().Name} state...");
+            elevator.SetStatusMessage($"Leaving {this.GetType().Name} state...");
+        }
+
+        public override bool CanProceedTo(ElevatorState targetState)
+        {
+            return targetState.GetType() == typeof(IdleState);
         }
     }
 }

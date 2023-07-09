@@ -2,18 +2,11 @@
 {
     public abstract class ElevatorState
     {
-        public abstract void OnEnterState(ElevatorManager elevator);
+        public abstract void EnterState(ElevatorManager elevator);
         public abstract void UpdateState(ElevatorManager elevator);
-        public virtual bool CanProceedTo(ElevatorManager elevator)
-        {
-            return true;
-        }
-        public abstract void OnLeaveState(ElevatorManager elevator);
+        public virtual bool CanProceedTo(ElevatorState targetState) => true;
+        public abstract void LeaveState(ElevatorManager elevator);
+        public virtual ElevatorState Clone() => (ElevatorState)this.MemberwiseClone();
 
-        public virtual ElevatorState Clone()
-        {
-            return (ElevatorState)this.MemberwiseClone();
-        }
-        
     }
 }

@@ -17,7 +17,7 @@ namespace ElevatorApi.Services
 
         public void RequestElevator(int floor)
         {
-            _elevatorSystem.RequestElevator(floor);
+            _elevatorSystem.CallElevator(floor);
         }
 
         public IEnumerable<IElevator> GetElevatorSystemState()

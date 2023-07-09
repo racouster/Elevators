@@ -9,7 +9,7 @@ namespace Elevator.Test
         public void ElevatorSystemManager_Start_EntersRunningState()
         {
             // Arrange
-            ElevatorSystemManager elevatorSystem = new(1);
+            ElevatorSystemManager elevatorSystem = new(1, -1, 1);
             
             // Act
             elevatorSystem.Start();
@@ -36,7 +36,7 @@ namespace Elevator.Test
         {
             // Arrange
             // Act
-            ElevatorSystemManager elevatorSystem = new(5);
+            ElevatorSystemManager elevatorSystem = new(5, -1, 1);
 
             // Assert
             elevatorSystem.ElevatorCount.Should().Be(5);
@@ -48,15 +48,15 @@ namespace Elevator.Test
         public void ChooseFloor_MovingUpOrDown_StopsOnTargetFloor(int targetFloor)
         {
             // Arrange
-            ElevatorSystemManager elevatorSystem = new(1);
+            ElevatorSystemManager elevatorSystem = new(1, -1, 1);
             elevatorSystem.Start();
 
             // Act
-            elevatorSystem.RequestElevator(targetFloor);
+            elevatorSystem.CallElevator(targetFloor);
             elevatorSystem.Update(TimeSpan.Zero);
 
             // Assert
-            elevatorSystem.Elevators[0].CurrentFloor.Should().Be(targetFloor);
+            elevatorSystem.Elevators[0].CurrentFloorNumber.Should().Be(targetFloor);
         }
 
         
