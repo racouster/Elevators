@@ -1,74 +1,133 @@
-﻿namespace ElevatorLib
+﻿using ElevatorLib.States;
+
+namespace ElevatorLib
 {
-    public class ElevatorManager
+    public class ElevatorManager : IElevator
     {
         public Guid Id { get; } = Guid.NewGuid();
-        
+        public List<string> StatusMessages { get; private set; } = new();
+
         public int MinimumFloor { get; private set; } = -3;
         public int MaximumFloor { get; private set; } = 10;
 
-        public int CurrentFloor { get; private set; } = 0;
-        public int TargetFloor { get; private set; } = 0;
+        public int CurrentFloorNumber { get; private set; }
+        public IFloor CurrentFloor { get; private set; }
+        public int TargetFloor { get; private set; }
 
+        public int Occupants { get; private set; }
+        public int OccupantLimit { get; private set; }
 
+        public ElevatorState CurrentState { get; private set; }
+        public ElevatorState PreviousState { get; private set; }
+        public Queue<ElevatorState> StateQueue { get; private set; } = new();
 
-        public ElevatorState _currentState { get; private set; }
-
-        public IdleState IdleState = new ();
-        public MovingState MovingState = new ();
-        public ClosingState ClosingState = new();
-        public OpeningState OpeningState = new();
+        public IdleState IdleState = new();
+        public MovingState MovingState = new();
+        public DoorsClosedState DoorsClosedState = new();
+        public DoorsOpenState DoorsOpenState = new();
         public ErrorState ErrorState = new();
 
-        public ElevatorManager()
+        private TextWriter _output = new DebugWriter(); // TextWriter.Null;
+
+        public ElevatorManager(int startingFloor, int occupantLimit, int minimumFloor, int maximumFloor)
         {
-            _currentState = new IdleState();
-            _currentState.EnterState(this);
+            PreviousState = new IdleState();
+            CurrentState = new IdleState();
+            CurrentState.EnterState(this);
+            StatusMessages.Add("Initializing...");
+
+            CurrentFloorNumber = startingFloor;
+            TargetFloor = startingFloor;
+            MinimumFloor = minimumFloor;
+            MaximumFloor = maximumFloor;
+            OccupantLimit = occupantLimit;
+            Occupants = 0;
         }
 
-        public void Update()
+        public void Update(IFloor floor)
         {
-            _currentState.UpdateState(this);
+            _output.WriteLine(string.Join('\n', StatusMessages));
+            StatusMessages.Clear();
+            CurrentFloor = floor;
+            CurrentState.UpdateState(this);
+            
+            StateQueue.TryDequeue(out ElevatorState? nextstate);
+            if (nextstate is not null)
+            {
+                CurrentState.LeaveState(this);
+                PreviousState = CurrentState.Clone();
+                CurrentState = nextstate;
+                CurrentState.EnterState(this);
+            }
         }
 
-        public void ChangeState(ElevatorState elevatorState)
+        public void ChangeState(ElevatorState newElevatorState)
         {
-            _currentState = elevatorState;
-            _currentState.EnterState(this);
+            StateQueue.Enqueue(newElevatorState);
         }
 
         internal void MoveDown()
         {
-            if (this.CurrentFloor > this.MinimumFloor)
+            if (this.CurrentFloorNumber > this.MinimumFloor)
             {
-                this.CurrentFloor--;
+                this.CurrentFloorNumber--;
             }
         }
 
         internal void MoveUp()
         {
-            if (this.CurrentFloor < this.MaximumFloor)
+            if (this.CurrentFloorNumber < this.MaximumFloor)
             {
-                this.CurrentFloor++;
+                this.CurrentFloorNumber++;
             }
         }
 
         public void ChooseFloor(int targetFloor)
         {
-            if (targetFloor < this.MinimumFloor)
+            if (targetFloor < MinimumFloor)
             {
-                this.TargetFloor = this.MinimumFloor;
+                TargetFloor = MinimumFloor;
             }
-            else if (targetFloor > this.MaximumFloor)
+            else if (targetFloor > MaximumFloor)
             {
-                this.TargetFloor = this.MaximumFloor;
+                TargetFloor = MaximumFloor;
             }
             else
             {
-                this.TargetFloor = targetFloor;
+                TargetFloor = targetFloor;
             }
 
-            this.ChangeState(this.MovingState);
+            ChangeState(MovingState);
+        }
+
+        public void SetStatusMessage(string newMessage)
+        {
+            this.StatusMessages.Add(newMessage);
+        }
+
+        public int AddOccupants(int change)
+        {
+            Occupants += Math.Abs(change);
+            Occupants = Math.Min(Occupants, OccupantLimit);
+            return Occupants;
+        }
+
+        public int RemoveOccupants(int change)
+        {
+            Occupants -= Math.Abs(change);
+            Occupants = Math.Max(0, Occupants);
+            return Occupants;
+        }
+
+        internal bool OpenDoor()
+        {
+            if (CurrentState != IdleState)
+            {
+                return false;
+            }
+
+            ChangeState(DoorsOpenState);
+            return true;
         }
     }
 }
